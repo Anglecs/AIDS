@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>守护每一次选择 —— 艾滋病防治知识互动指南</title>
+    <style>
+        /* 所有样式内联，避免外部资源 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe5e5 100%);
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding: 10px;
+        }
+        
+        .game-container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 2px solid #e53935;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #e53935 0%, #c62828 100%);
+            color: white;
+            padding: 20px 15px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+        
+        .tags {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .tag {
+            background: rgba(255,255,255,0.3);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        
+        .scene-container {
+            padding: 20px 15px;
+            min-height: 400px;
+        }
+        
+        .scene-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #c62828;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .scene-description {
+            font-size: 16px;
+            color: #555;
+            text-align: center;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .scene-prompt {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+            font-size: 14px;
+            color: #b71c1c;
+        }
+        
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .option-btn {
+            background: #e53935;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 6px rgba(229, 57, 53, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .option-btn:active {
+            background: #c62828;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(229, 57, 53, 0.3);
+        }
+        
+        .progress-container {
+            padding: 15px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #e53935;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+        
+        .footer {
+            padding: 15px;
+            text-align: center;
+            font-size: 12px;
+            color: #6c757d;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .success-card {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-left: 4px solid #10B981;
+        }
+        
+        .warning-card {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 4px solid #F59E0B;
+        }
+        
+        .danger-card {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border-left: 4px solid #EF4444;
+        }
+        
+        .scene-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin: 0 auto 20px;
+            background: #e53935;
+        }
+        
+        /* 封面样式 */
+        .cover-container {
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            /* 替换为用户提供的图片作为背景 */
+            background-image: url('https://p26-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/8cde7e17696843b3b85a030b2ccc5ed2.jpg~tplv-a9rns2rl98-24:720:720.image?rcl=202510241915593A93B2A692341DFA47DB&rk3s=8e244e95&rrcfp=8a172a1a&x-expires=1761909360&x-signature=YQHK3BQLY6BNmcvDIZNAcMxf3%2BY%3D');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        
+        /* 添加半透明遮罩，确保文字清晰可见 */
+        .cover-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(229, 57, 53, 0.85) 0%, rgba(198, 40, 40, 0.85) 100%);
+            z-index: 1;
+        }
+        
+        /* 确保内容在遮罩之上 */
+        .cover-container > * {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .ribbon-decoration {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            opacity: 0.1;
+        }
+        
+        .ribbon-decoration::before {
+            content: "🎗️🎗️🎗️🎗️🎗️🎗️🎗️🎗️🎗️🎗️🎗️🎗️🎗️🎗️🎗️🎗️";
+            position: absolute;
+            top: 20px;
+            left: 0;
+            font-size: 24px;
+            white-space: nowrap;
+            animation: scrollRibbon 30s linear infinite;
+        }
+        
+        @keyframes scrollRibbon {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .cover-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .cover-subtitle {
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .cover-icon {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #ffffff; /* 改为白色背景 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 50px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border: 3px solid rgba(255,255,255,0.3);
+        }
+        
+        .red-ribbon {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform: rotate(90deg); /* 修改为旋转90度（顺时针旋转90度） */
+        }
+        
+        .red-ribbon::before,
+        .red-ribbon::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 20px;
+            background-color: #e53935; /* 艾滋病红丝带的红色 */
+            border-radius: 10px 0 0 10px;
+        }
+        
+        .red-ribbon::before {
+            transform: rotate(-45deg);
+            top: 20px;
+            left: 10px;
+        }
+        
+        .red-ribbon::after {
+            transform: rotate(45deg);
+            bottom: 20px;
+            left: 10px;
+        }
+        
+        .ribbon-center {
+            position: absolute;
+            width: 20px;
+            height: 40px;
+            background-color: #e53935; /* 艾滋病红丝带的红色 */
+            border-radius: 10px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .start-btn {
+            background: white;
+            color: #e53935;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 1;
+            margin-bottom: 15px;
+        }
+        
+        .start-btn:active {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        }
+        
+        .cover-description {
+            margin-top: 30px;
+            font-size: 14px;
+            opacity: 0.8;
+            max-width: 300px;
+        }
+        
+        /* 场景选择页面样式 */
+        .scene-choice-container {
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .scene-choice-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #c62828;
+            margin-bottom: 20px;
+        }
+        
+        .scene-choice-description {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+        
+        .scene-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .scene-option {
+            background: #e53935;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 18px;
+            font-size: 16px;
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(229, 57, 53, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .scene-option:active {
+            background: #c62828;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(229, 57, 53, 0.3);
+        }
+        
+        .scene-option-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .scene-option-text {
+            font-size: 16px;
+        }
+        
+        /* 解锁结局页面样式 */
+        .unlock-container {
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 15px;
+            text-align: center;
+        }
+        
+        .unlock-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #c62828;
+            margin-bottom: 20px;
+        }
+        
+        .tree-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 30px;
+        }
+        
+        .tree-row {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        .tree-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 10px;
+        }
+        
+        .node-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            margin-bottom: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .node-icon.locked {
+            background: #e0e0e0;
+            color: #9e9e9e;
+            filter: grayscale(100%);
+        }
+        
+        .node-icon.unlocked {
+            background: #e53935;
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .node-name {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            max-width: 80px;
+        }
+        
+        .tree-connector {
+            height: 30px;
+            width: 2px;
+            background: #e53935;
+            margin: 5px 0;
+        }
+        
+        .unlock-stats {
+            background: #ffebee;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .stats-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #c62828;
+            margin-bottom: 10px;
+        }
+        
+        .stats-count {
+            font-size: 24px;
+            font-weight: 700;
+            color: #e53935;
+        }
+        
+        .stats-total {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .back-btn {
+            background: #e53935;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(229, 57, 53, 0.2);
+        }
+        
+        .back-btn:active {
+            background: #c62828;
+            transform: translateY(-2px);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        .slide-up {
+            animation: slideUp 0.5s ease forwards;
+        }
+        
+        @media (max-width: 360px) {
+            .header h1 {
+                font-size: 22px;
+            }
+            
+            .scene-title {
+                font-size: 18px;
+            }
+            
+            .scene-description {
+                font-size: 15px;
+            }
+            
+            .option-btn {
+                padding: 12px;
+                font-size: 15px;
+            }
+            
+            .cover-title {
+                font-size: 24px;
+            }
+            
+            .cover-subtitle {
+                font-size: 16px;
+            }
+            
+            .cover-icon {
+                width: 100px;
+                height: 100px;
+                font-size: 40px;
+            }
+            
+            .node-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <header class="header">
+            <h1>守护每一次选择</h1>
+            <p>—— 艾滋病防治知识互动指南</p>
+            <div class="tags">
+                <span class="tag">国家疾控中心 2025年艾滋病防治核心信息</span>
+                <span class="tag">射洪市疾控中心指导</span>
+            </div>
+        </header>
+
+        <div class="scene-container">
+            <div id="scene-content" class="scene-content">
+                <!-- 场景内容将通过JavaScript动态加载 -->
+            </div>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-info">
+                <span>决策进度</span>
+                <span id="progress-text">场景 1 / 5</span>
+            </div>
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill" style="width: 20%"></div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>© 2025 艾滋病防治知识互动指南</p>
+        </footer>
+    </div>
+
+    <script>
+        // 游戏数据
+        const gameData = {
+            currentScene: 'cover', // 从封面开始
+            progress: 1,
+            totalScenes: 5,
+            unlockedEndings: [],
+            totalEndings: 5,
+            scenes: {
+                cover: {
+                    title: '守护每一次选择',
+                    subtitle: '艾滋病防治知识互动指南',
+                    description: '通过情景模拟，了解艾滋病防治知识，做出正确的健康选择',
+                    icon: 'red-ribbon', // 修改为红丝带
+                    type: 'cover',
+                    options: [
+                        {
+                            text: '开始体验',
+                            nextScene: 'sceneChoice',
+                            progress: 1
+                        },
+                        {
+                            text: '查看结局收集',
+                            nextScene: 'unlock',
+                            progress: 1
+                        }
+                    ]
+                },
+                sceneChoice: {
+                    title: '场景选择',
+                    description: '请选择您想体验的场景，了解不同情境下的艾滋病防治知识',
+                    type: 'choice',
+                    options: [
+                        {
+                            text: '社交聚会',
+                            icon: '🎉',
+                            nextScene: 'start',
+                            progress: 2
+                        },
+                        {
+                            text: '黑诊所就医',
+                            icon: '🏥',
+                            nextScene: 'blackClinic',
+                            progress: 2
+                        },
+                        {
+                            text: '毒品相关',
+                            icon: '💉',
+                            nextScene: 'drugScene',
+                            progress: 2
+                        }
+                    ]
+                },
+                start: {
+                    title: '社交聚会會場景',
+                    description: '週末與朋友小聚時，你認識了一位聊得來的夥伴。聚會尾声對方提議："今晚時間還早，不如換個地方再聊聊，放松些，不用用那么拘谨。" 此時你會如何回應？',
+                    icon: '🎉',
+                    iconColor: '#e53935',
+                    options: [
+                        {
+                            text: '礼貌表示 "接下来有安排"，并建议下次在公共场合再聚',
+                            nextScene: 'ending1',
+                            progress: 5
+                        },
+                        {
+                            text: '犹豫后同意前往',
+                            nextScene: 'scene2',
+                            progress: 3
+                        }
+                    ]
+                },
+                blackClinic: {
+                    title: '黑诊所就医场景',
+                    description: '你因为一些健康问题，去了一个不正规的黑诊所，那里的卫生条件很差，医生重复使用针头。你会怎么做？',
+                    icon: '🏥',
+                    iconColor: '#e53935',
+                    options: [
+                        {
+                            text: '立即离开，前往正规医院就诊',
+                            nextScene: 'ending1',
+                            progress: 5
+                        },
+                        {
+                            text: '虽然担心，但还是是接受了治疗',
+                            nextScene: 'scene2',
+                            progress: 3
+                        }
+                    ]
+                },
+                drugScene: {
+                    title: '毒品相关场景',
+                    description: '在朋友的诱惑下，你尝试了毒品，并与人共用针具。事后你感到非常后悔和担忧。此时你会如何应对？',
+                    icon: '💉',
+                    iconColor: '#e53935',
+                    options: [
+                        {
+                            text: '立即寻求戒毒帮助，并前往疾控中心检测',
+                            nextScene: 'ending1',
+                            progress: 5
+                        },
+                        {
+                            text: '虽然担忧，但未采取任何行动',
+                            nextScene: 'scene2',
+                            progress: 3
+                        }
+                    ]
+                },
+                scene2: {
+                    title: '健康顾虑与及时阻断',
+                    description: '你意识到自己可能面临艾滋病感染风险，此时会采取什么行动？',
+                    icon: '🤔',
+                    iconColor: '#e53935',
+                    options: [
+                        {
+                            text: '48小时内联系当地地疾控控中心，咨询检测与阻断相关事宜',
+                            nextScene: 'ending2',
+                            progress: 5
+                        },
+                        {
+                            text: '觉得 "应该不会有问题"，暂时搁置顾虑',
+                            nextScene: 'scene3',
+                            progress: 4
+                        }
+                    ]
+                },
+                scene3: {
+                    title: '身体信号的提醒',
+                    description: '几周后，你出现持续低热、淋巴结轻微肿大的症状，身边朋友建议你去做健康检查，你会怎么选？',
+                    icon: '🌡️',
+                    iconColor: '#e53935',
+                    options: [
+                        {
+                            text: '反复在网上查询症状信息，心里越发焦虑却迟迟不敢去检查',
+                            nextScene: 'ending4',
+                            progress: 5
+                        },
+                        {
+                            text: '正视身体信号，前往正规医院进行专项检测',
+                            nextScene: 'scene4',
+                            progress: 5
+                        }
+                    ]
+                },
+                scene4: {
+                    title: '确诊后的责任与行动',
+                    description: '医生告知需规律服药控制病情，同时建议及时告知近期密切接触者进行检测。面对这样的情况，你会如何做？',
+                    icon: '💊',
+                    iconColor: '#e53935',
+                    options: [
+                        {
+                            text: '遵医嘱坚持服药，主动联系相关人员提醒其进行健康检查',
+                            nextScene: 'ending3',
+                            progress: 5
+                        },
+                        {
+                            text: '拒绝服药药，且不愿告知他人自身情况，继续保持原有社交方式',
+                            nextScene: 'ending5',
+                            progress: 5
+                        }
+                    ]
+                },
+                ending1: {
+                    id: 'ending1',
+                    title: '安全防线结局',
+                    description: '你用一个坚定的选择，筑牢了生命防线。艾滋病虽无疫苗，但正确防护能让风险归零 —— 这不是保守，是对自己的负责。',
+                    type: 'ending',
+                    result: 'success',
+                    prompt: '保持健康社交边界，是维护自身健康的重要前提。正确做好防护措施，可显著降低艾滋病性传播风险',
+                    icon: '✅',
+                    iconColor: '#10B981',
+                    options: [
+                        {
+                            text: '重新开始',
+                            nextScene: 'cover',
+                            progress: 1
+                        },
+                        {
+                            text: '查看结局收集',
+                            nextScene: 'unlock',
+                            progress: 1
+                        }
+                    ]
+                },
+                ending2: {
+                    id: 'ending2',
+                    title: '及时阻断结局',
+                    description: '72小时黄金期内的果断行动，让你躲过一劫。记住：疾控中心 24 小时开放阻断通道，犹豫才是最大的风险。',
+                    type: 'ending',
+                    result: 'success',
+                    prompt: '艾滋病暴露后 72 小时内是阻断黄金期，疾控机构提供免费检测与专业阻断服务，及时干预成功率可达 99%',
+                    icon: '🛡️',
+                    iconColor: '#10B981',
+                    options: [
+                        {
+                            text: '重新开始',
+                            nextScene: 'cover',
+                            progress: 1
+                        },
+                        {
+                            text: '查看结局收集',
+                            nextScene: 'unlock',
+                            progress: 1
+                        }
+                    ]
+                },
+                ending3: {
+                    id: 'ending3',
+                    title: '规范治疗结局',
+                    description: '确诊不是终点，而是科学管理的开始。你坚持服药的每一天，都是在改写疾病的结局 —— 如今 HIV 已成为可控的慢性病。',
+                    type: 'ending',
+                    result: 'success',
+                    prompt: '早期规范抗病毒治疗可使艾滋病患者预期寿命接近健康人群，主动告知接触者是履行健康责任的重要体现，也能避免疾病进一步传播',
+                    icon: '💪',
+                    iconColor: '#10B981',
+                    options: [
+                        {
+                            text: '重新开始',
+                            nextScene: 'cover',
+                            progress: 1
+                        },
+                        {
+                            text: '查看结局收集',
+                            nextScene: 'unlock',
+                            progress: 1
+                        }
+                    ]
+                },
+                ending4: {
+                    id: 'ending4',
+                    title: '恐艾症囚徒结局',
+                    description: '你没感染 HIV，却被恐惧吞噬。反复洗手、回避社交、质疑检测结果 —— 这些正是恐艾症的典型症状。心理防线的崩塌，有时比病毒更可怕。',
+                    type: 'ending',
+                    result: 'warning',
+                    prompt: '过度焦虑可能引发疑病型心理问题，影响正常生活。若有健康顾虑，建议通过专业医疗机构获取科学诊断，避免自我误导',
+                    icon: '😨',
+                    iconColor: '#F59E0B',
+                    options: [
+                        {
+                            text: '重新开始',
+                            nextScene: 'cover',
+                            progress: 1
+                        },
+                        {
+                            text: '查看结局收集',
+                            nextScene: 'unlock',
+                            progress: 1
+                        }
+                    ]
+                },
+                ending5: {
+                    id: 'ending5',
+                    title: '法律追责结局',
+                    description: '你不仅让伴侣陷入感染危机，更触犯了《传染病防治法》。当手铐落下时才明白：隐瞒的不是秘密，是毁灭自己的炸弹。',
+                    type: 'ending',
+                    result: 'danger',
+                    prompt: '明知感染艾滋病仍故意传播，涉嫌违反《中华人民共和国传染病防治法》《刑法》相关规定，需承担相应法律责任，已有多起司法实践案例',
+                    icon: '⚖️',
+                    iconColor: '#EF4444',
+                    options: [
+                        {
+                            text: '重新开始',
+                            nextScene: 'cover',
+                            progress: 1
+                        },
+                        {
+                            text: '查看结局收集',
+                            nextScene: 'unlock',
+                            progress: 1
+                        }
+                    ]
+                },
+                unlock: {
+                    title: '结局收集',
+                    type: 'unlock',
+                    endings: [
+                        { id: 'ending1', name: '安全防线', icon: '✅', color: '#10B981' },
+                        { id: 'ending2', name: '及时阻断', icon: '🛡️', color: '#10B981' },
+                        { id: 'ending3', name: '规范治疗', icon: '💪', color: '#10B981' },
+                        { id: 'ending4', name: '恐艾症', icon: '😨', color: '#F59E0B' },
+                        { id: 'ending5', name: '法律追责', icon: '⚖️', color: '#EF4444' }
+                    ],
+                    options: [
+                        {
+                            text: '返回封面',
+                            nextScene: 'cover',
+                            progress: 1
+                        }
+                    ]
+                }
+            }
+        };
+
+        // 游戏函数
+        const game = {
+            // 初始化游戏
+            init() {
+                this.loadProgress();
+                this.showScene(gameData.currentScene);
+            },
+
+            // 加载进度
+            loadProgress() {
+                const savedProgress = localStorage.getItem('aidsGameProgress');
+                if (savedProgress) {
+                    const progressData = JSON.parse(savedProgress);
+                    gameData.unlockedEndings = progressData.unlockedEndings || [];
+                }
+            },
+
+            // 保存进度
+            saveProgress() {
+                const progressData = {
+                    unlockedEndings: gameData.unlockedEndings
+                };
+                localStorage.setItem('aidsGameProgress', JSON.stringify(progressData));
+            },
+
+            // 解锁结局
+            unlockEnding(endingId) {
+                if (!gameData.unlockedEndings.includes(endingId)) {
+                    gameData.unlockedEndings.push(endingId);
+                    this.saveProgress();
+                }
+            },
+
+            // 显示场景
+            showScene(sceneId) {
+                const scene = gameData.scenes[sceneId];
+                if (!scene) return;
+
+                // 如果是结局场景，解锁该结局
+                if (scene.type === 'ending' && scene.id) {
+                    this.unlockEnding(scene.id);
+                }
+
+                gameData.currentScene = sceneId;
+
+                const content = document.getElementById('scene-content');
+                const progressContainer = document.querySelector('.progress-container');
+                
+                // 清空内容
+                content.innerHTML = '';
+
+                // 封面页面特殊处理
+                if (scene.type === 'cover') {
+                    progressContainer.style.display = 'none';
+                    
+                    content.innerHTML = `
+                        <div class="cover-container fade-in">
+                            <div class="ribbon-decoration"></div>
+                            <div class="cover-icon">
+                                <div class="red-ribbon">
+                                    <div class="ribbon-center"></div>
+                                </div>
+                            </div>
+                            <h1 class="cover-title">${scene.title}</h1>
+                            <p class="cover-subtitle">${scene.subtitle}</p>
+                            <button class="start-btn slide-up" 
+                                    data-next="${scene.options[0].nextScene}" 
+                                    data-progress="${scene.options[0].progress}">
+                                ${scene.options[0].text}
+                            </button>
+                            <button class="start-btn slide-up" 
+                                    data-next="${scene.options[1].nextScene}" 
+                                    data-progress="${scene.options[1].progress}">
+                                ${scene.options[1].text}
+                            </button>
+                            <p class="cover-description">${scene.description}</p>
+                        </div>
+                    `;
+                } 
+                // 场景选择页面特殊处理
+                else if (scene.type === 'choice') {
+                    progressContainer.style.display = 'none';
+                    
+                    content.innerHTML = `
+                        <div class="scene-choice-container fade-in">
+                            <h2 class="scene-choice-title">${scene.title}</h2>
+                            <p class="scene-choice-description">${scene.description}</p>
+                            
+                            <div class="scene-options">
+                                ${scene.options.map((option, index) => `
+                                    <button class="scene-option slide-up" 
+                                            data-next="${option.nextScene}" 
+                                            data-progress="${option.progress || gameData.progress}">
+                                        <div class="scene-option-icon">${option.icon}</div>
+                                        <div class="scene-option-text">${option.text}</div>
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+                // 解锁页面特殊处理
+                else if (scene.type === 'unlock') {
+                    progressContainer.style.display = 'none';
+                    
+                    // 计算已解锁结局数量
+                    const unlockedCount = gameData.unlockedEndings.length;
+                    
+                    content.innerHTML = `
+                        <div class="unlock-container fade-in">
+                            <h2 class="unlock-title">结局收集</h2>
+                            
+                            <div class="unlock-stats">
+                                <div class="stats-title">已解锁结局</div>
+                                <div class="stats-count">${unlockedCount}</div>
+                                <div class="stats-total">/ ${gameData.totalEndings}</div>
+                            </div>
+                            
+                            <div class="tree-container">
+                                <div class="tree-row">
+                                    ${scene.endings.slice(0, 2).map(ending => `
+                                        <div class="tree-node">
+                                            <div class="node-icon ${gameData.unlockedEndings.includes(ending.id) ? 'unlocked' : 'locked'}" 
+                                                 style="${gameData.unlockedEndings.includes(ending.id) ? `background: ${ending.color}` : ''}">
+                                                ending.icon}
+                                            </div>
+                                            <div class="node-name">${ending.name}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                
+                                <div class="tree-connector"></div>
+                                
+                                <div class="tree-row">
+                                    ${scene.endings.slice(2).map(ending => `
+                                        <div class="tree-node">
+                                            <div class="node-icon ${gameData.unlockedEndings.includes(ending.id) ? 'unlocked' : 'locked'}" 
+                                                 style="${gameData.unlockedEndings.includes(ending.id) ? `background: ${ending.color}` : ''}">
+                                                ${ending.icon}
+                                            </div>
+                                            <div class="node-name">${ending.name}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            
+                            <div class="options-container">
+                                ${scene.options.map((option, index) => `
+                                    <button class="back-btn slide-up" 
+                                            data-next="${option.nextScene}" 
+                                            data-progress="${option.progress || gameData.progress}">
+                                        ${option.text}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+                else {
+                    // 显示进度条
+                    progressContainer.style.display = 'block';
+                    
+                    // 确定卡片样式
+                    let cardClass = '';
+                    if (scene.type === 'ending') {
+                        switch (scene.result) {
+                            case 'success':
+                                cardClass = 'success-card';
+                                break;
+                            case 'warning':
+                                cardClass = 'warning-card';
+                                break;
+                            case 'danger':
+                                cardClass = 'danger-card';
+                                break;
+                        }
+                    }
+
+                    content.innerHTML = `
+                        <div class="${cardClass} fade-in" style="padding: 20px; border-radius: 10px;">
+                            <div class="scene-icon" style="background: ${scene.iconColor}">
+                                ${scene.icon}
+                            </div>
+                            <h2 class="scene-title">${scene.title}</h2>
+                            <p class="scene-description">${scene.description}</p>
+                            
+                            ${scene.prompt ? `
+                                <div class="scene-prompt">
+                                    ${scene.prompt}
+                                </div>
+                            ` : ''}
+                            
+                            <div class="options-container">
+                                ${scene.options.map((option, index) => `
+                                    <button class="option-btn slide-up" 
+                                            data-next="${option.nextScene}" 
+                                            data-progress="${option.progress || gameData.progress}">
+                                        ${option.text}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // 更新进度
+                this.updateProgress();
+
+                // 添加选项点击事件
+                const optionButtons = content.querySelectorAll('.option-btn, .start-btn, .back-btn, .scene-option');
+                optionButtons.forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const nextScene = button.getAttribute('data-next');
+                        const progress = parseInt(button.getAttribute('data-progress'));
+                        
+                        // 更新进度
+                        gameData.progress = progress;
+                        
+                        // 添加点击动画
+                        button.style.transform = 'scale(0.98)';
+                        button.style.opacity = '0.8';
+                        
+                        setTimeout(() => {
+                            this.showScene(nextScene);
+                        }, 200);
+                        
+                        setTimeout(() => {
+                            button.style.transform = '';
+                            button.style.opacity = '';
+                        }, 200);
+                    });
+                });
+            },
+
+            // 更新进度条
+            updateProgress() {
+                const progressFill = document.getElementById('progress-fill');
+                const progressText = document.getElementById('progress-text');
+                const progressPercentage = (gameData.progress / gameData.totalScenes) * 100;
+                
+                progressFill.style.width = `${progressPercentage}%`;
+                progressText.textContent = `场景 ${gameData.progress} / ${gameData.totalScenes}`;
+            }
+        };
+
+        // 初始化游戏
+        document.addEventListener('DOMContentLoaded', () => {
+            game.init();
+        });
+        
+        // 防止页面缩放
+        document.addEventListener('touchstart', function(event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        });
+        
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+    </script>
+</body>
+</html>
